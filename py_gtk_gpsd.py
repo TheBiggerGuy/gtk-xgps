@@ -92,9 +92,25 @@ class GUI:
                 self.statusbar.push(self.statusbar.get_context_id("gpsd poll failed"), "Error, NOT retrying")
                 return False
 
+        # clean up the latitude
+	if gpsd.fix.latitude == 0:
+            latitude = str(gpsd.fix.latitude)
+        elif gpsd.fix.latitude > 0:
+            latitude = str(gpsd.fix.latitude) + " N"
+        else:
+            latitude = str( gpsd.fix.latitude * -1) + " S"
+
+        # clean up the longitude
+	if gpsd.fix.longitude == 0:
+            longitude = str(gpsd.fix.longitude)
+        elif gpsd.fix.longitude > 0:
+            longitude = str(gpsd.fix.longitude) + " E"
+        else:
+            longitude = str(gpsd.fix.longitude * -1) + " W"
+
         self.entry_time.set_text(	str(gpsd.fix.time))
-        self.entry_latitude.set_text(	str(gpsd.fix.latitude))
-        self.entry_longitude.set_text(	str(gpsd.fix.longitude))
+        self.entry_latitude.set_text(	    latitude)
+        self.entry_longitude.set_text(	    longitude)
         self.entry_altitude.set_text(	str(gpsd.fix.altitude) + "m")
         self.entry_speed.set_text(	str(gpsd.fix.speed) + "m/s")
 
