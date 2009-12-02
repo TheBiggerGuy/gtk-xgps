@@ -6,6 +6,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gobject
+import cairo
 
 import gps
 import time
@@ -38,6 +39,7 @@ class GUI:
         self.window       = builder.get_object( "window" )
         self.statusbar    = builder.get_object( "statusbar")
 	self.label_raw    = builder.get_object( "label_raw" )
+        self.drawingarea  = builder.get_object( "drawingarea" )
 
         self.entry_time		= builder.get_object( "entry_time" )
         self.entry_latitude	= builder.get_object( "entry_latitude" )
@@ -93,8 +95,8 @@ class GUI:
         self.entry_time.set_text(	str(gpsd.fix.time))
         self.entry_latitude.set_text(	str(gpsd.fix.latitude))
         self.entry_longitude.set_text(	str(gpsd.fix.longitude))
-        self.entry_altitude.set_text(	str(gpsd.fix.altitude))
-        self.entry_speed.set_text(	str(gpsd.fix.speed))
+        self.entry_altitude.set_text(	str(gpsd.fix.altitude) + "m")
+        self.entry_speed.set_text(	str(gpsd.fix.speed) + "m/s")
 
         self.entry_EPH.set_text(	str(gpsd.fix.eph))
         self.entry_EPV.set_text(	str(gpsd.fix.epv))
