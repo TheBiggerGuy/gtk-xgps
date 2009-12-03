@@ -6,10 +6,74 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gobject
-import cairo
 
 import gps
+
 import time
+import math
+
+class SatWidget(gtk.DrawingArea):
+
+    def __init__(self):
+        gtk.DrawingArea.__init__(self)
+        self.connect("expose_event", self.expose)
+        self.context = None
+
+    def expose(self, widget, event):
+        self.context = widget.window.cairo_create()
+        
+        # set a clip region for the expose event
+        self.context.rectangle(event.area.x, event.area.y,
+                               event.area.width, event.area.height)
+        self.context.clip()
+
+        self.width = event.area.width
+        self.height = event.area.height
+        
+        self.draw()
+        
+    def draw(self, satList=None):
+
+        if self.context == None:
+            return True
+
+        context = self.context
+        height = self.height
+        width = self.width
+
+        centerx = width/2
+        centery = height/2
+        small   = min(height, width)/4 - 10
+        large   = small * 2
+
+        # center dot
+        context.set_source_rgb(0.0, 255, 0)
+        context.arc(centerx, centery, 10 , 0, 2*math.pi)
+        context.fill()
+
+        # small
+        context.set_source_rgb(0.0, 1.5, 0.5)
+	context.set_line_width(2.0)
+        context.arc(centerx, centery, small , 0, 2*math.pi)
+        context.stroke()
+
+        # large
+        context.set_source_rgb(0.0, 0.5, 1.5)
+	context.set_line_width(2.0)
+        context.arc(centerx, centery, large, 0, 2*math.pi)
+        context.stroke()
+
+        # if sats
+        if satList == None:
+            return True
+
+        for sat in satList:
+            # work out loc
+            x = centerx + (large * math.sin(sat.azimuth))
+            y = centery + (large * math.cos(sat.azimuth))
+            context.set_source_rgb(255, 255, 255)
+            context.arc(x, y, 10 , 0, 2*math.pi)
+            context.fill()
 
 class GUI:
 
@@ -39,7 +103,6 @@ class GUI:
         self.window       = builder.get_object( "window" )
         self.statusbar    = builder.get_object( "statusbar")
 	self.label_raw    = builder.get_object( "label_raw" )
-        self.drawingarea  = builder.get_object( "drawingarea" )
 
         self.entry_time		= builder.get_object( "entry_time" )
         self.entry_latitude	= builder.get_object( "entry_latitude" )
@@ -71,6 +134,10 @@ class GUI:
         self.treeview.append_column(col5)
 
         self.treeview.set_model(self.liststore_satList)
+
+        self.image = SatWidget()
+        builder.get_object( "hbox1" ).pack_start(self.image, expand=True, fill=True, padding=0)
+        self.image.show_all()
 
         # connect signals
         builder.connect_signals(self)
@@ -124,6 +191,8 @@ class GUI:
         self.liststore_satList.clear()
         for sat in gpsd.satellites:
             self.liststore_satList.append([sat.PRN, sat.elevation, sat.azimuth, sat.ss, sat.used])
+
+        #self.image.draw(gpsd.satellites)
 
         return True
 

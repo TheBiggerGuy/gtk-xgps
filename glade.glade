@@ -73,12 +73,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkDrawingArea" id="drawingarea">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
