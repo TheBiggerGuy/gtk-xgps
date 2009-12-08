@@ -228,6 +228,6 @@ if __name__ == "__main__":
 	exit(-1)
 
     session.send("nmea")
-    #session.send("raw")
+    session.send("raw")
     gui = GUI()
     gui.main(session)
