@@ -8,6 +8,7 @@ import gtk
 import gobject
 
 import gps
+import socket
 
 import time
 import math
@@ -220,8 +221,13 @@ class GUI:
 # interpreter then create a HelloWorld instance and show it
 if __name__ == "__main__":
 
-    session = gps.gps(verbose=0)
+    try:
+        session = gps.gps(verbose=0)
+    except socket.error, msg:
+        print "Error: Cannot connect to gpsd. Python returned this meg \"" + str(msg) + "\""
+	exit(-1)
+
     session.send("nmea")
-    session.send("raw")
+    #session.send("raw")
     gui = GUI()
     gui.main(session)
