@@ -1,0 +1,9 @@
+This is a new version of the 'xgps' program to try and fulfil this wish
+
+	*** Rewrite xgps
+
+	The Motif/Lesstif dependency is a pain in the butt, the code is a 
+	maintainability problem, and we'd like to extend it to display AIS
+	messages. Probably the thing to do is write something pygtk-based.
+
+The original program is available from "http://gpsd.berlios.de/index.html"
